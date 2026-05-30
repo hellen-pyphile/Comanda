@@ -1,4 +1,3 @@
-//NEXT STEP: ARRAY PRICES
 //ATTACH CODES ON INPUT
 //ATTACH/STORE ON TAB
 
@@ -35,33 +34,42 @@ void fmenu()
 	const char *cddk[]  = {"#053", "#004", "#088", "#019"};
 	const char *cddt[]  = {"#077", "#042", "#061"};
 	
+	//menu prices
+	const char *prapp[] = {"R$22,00", "R$18,00", "R$24,00"};
+	const char *prds[]  = {"R$38,00", "R$42,00", "R$35,00", "R$32,00", "R$46,00"};
+	const char *prdk[]  = {"R$12,00", "R$ 5,00", "R$ 8,50", "R$ 7,00"};
+	const char *prdt[]  = {"R$15,00", "R$18,00", "R$10,00"};
 	
 	//array size and print appetizer 
+	printf("|Entradas\n");
 	int aptotal = sizeof(appetizer) / sizeof(appetizer[0]);
 	for(int i = 0; i < aptotal; i++)
 	{
-		printf("| %s \t %s \t\n", cdapp[i], appetizer[i]);
+		printf("| %s \t %-25s \t %s\n", cdapp[i], appetizer[i], prapp[i]);
 	}
 	
 	//array size and print dishes 
+	printf("|Pratos\n");
 	int dstotal = sizeof(dishes) / sizeof(dishes[0]);
 	for(int i = 0; i < dstotal; i++)
 	{
-		printf("| %s \t %s \t\n", cdds[i], dishes[i]);
+		printf("| %s \t %-25s \t %s\n", cdds[i], dishes[i], prds[i]);
 	}
 	
-	//array size and print drinks 
+	//array size and print drinks
+	printf("|Bebidas\n"); 
 	int dktotal = sizeof(drinks) / sizeof(drinks[0]);
 	for(int i = 0; i < dktotal; i++)
 	{
-		printf("| %s \t %s \t\n", cddk[i], drinks[i]);
+		printf("| %s \t %-25s \t %s\n", cddk[i], drinks[i], prdk[i]);
 	}
 	
 	//array size and print dessert 
+	printf("|Sobremesas\n");
 	int dttotal = sizeof(dessert) / sizeof(dessert[0]);
 	for(int i = 0; i < dttotal; i++)
 	{
-		printf("| %s \t %s \t\n", cddt[i], dessert[i]);
+		printf("| %s \t %-25s \t %s\n", cddt[i], dessert[i], prdt[i]);
 	}
 	
 	return;
