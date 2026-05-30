@@ -12,6 +12,13 @@ void faddorder();
 void feditorder();
 //void ftotal();
 
+struct item
+{
+	const char *name;
+	float price;
+	int code;
+};
+
 int main()
 {
 	printf("\tBon Apetit\n\n");
@@ -25,29 +32,39 @@ int main()
 void fmenu()
 {
 	//menu
-	const char *appetizer[] = {"Batata Frita", "Polenta Frita", "Bolinhas de Queijo"};
-	const char *dishes[] = {"File de Peixe Empanado", "Frango a Parmegiana", "Frango a Passarinho", "Bisteca", "Cupim ao Molho"};
-	const char *drinks[] = {"Pink Lemonade", "Refrigerante 250ml", "Suco Natural", "Cha Gelado"};
-	const char *dessert[] = {"Milkshake", "Petit Gateu", "Sorvete"};
+	struct item appetizer[] = {
+		{"Batata Frita", 22.00, 004},
+		{"Polenta Frita", 18.00, 072},
+		{"Bolinhas de Queijo", 24.00, 051}
+	};
 	
-	//menu codes
-	const char *cdapp[] = {"#084", "#037", "#091"};
-	const char *cdds[]  = {"#015", "#072", "#048", "#066", "#029"};
-	const char *cddk[]  = {"#053", "#004", "#088", "#019"};
-	const char *cddt[]  = {"#077", "#042", "#061"};
+	struct item dishes[] = {
+		{"File de Peixe Empanado", 38.00, 015}, 
+		{"Frango a Parmegiana", 42.00, 072},
+		{"Frango a Passarinho", 35.00, 047},
+		{"Bisteca", 32.00, 066},
+		{"Cupim ao Molho", 46.00, 025}
+	};
 	
-	//menu prices
-	const char *prapp[] = {"R$22,00", "R$18,00", "R$24,00"};
-	const char *prds[]  = {"R$38,00", "R$42,00", "R$35,00", "R$32,00", "R$46,00"};
-	const char *prdk[]  = {"R$12,00", "R$ 5,00", "R$ 8,50", "R$ 7,00"};
-	const char *prdt[]  = {"R$15,00", "R$18,00", "R$10,00"};
+	struct item drinks[] = {
+		{"Pink Lemonade", 12.00, 053},
+		{"Refrigerante 250ml", 5.00, 024},
+		{"Suco Natural", 8.50, 033},
+		{"Cha Gelado", 7.00, 012}
+	};
+	
+	struct item dessert[] = {
+		{"Milkshake", 15.00, 057},
+		{"Petit Gateu", 18.00, 042},
+		{"Sorvete", 10.00, 061}
+	};
 	
 	//array size and print appetizer 
 	printf("|Entradas\n");
 	int aptotal = sizeof(appetizer) / sizeof(appetizer[0]);
 	for(int i = 0; i < aptotal; i++)
 	{
-		printf("| %s \t %-25s \t %s\n", cdapp[i], appetizer[i], prapp[i]);
+		printf("| %d \t %-25s \t R$%.2f\n", appetizer[i].code, appetizer[i].name, appetizer[i].price);
 	}
 	
 	//array size and print dishes 
@@ -55,7 +72,7 @@ void fmenu()
 	int dstotal = sizeof(dishes) / sizeof(dishes[0]);
 	for(int i = 0; i < dstotal; i++)
 	{
-		printf("| %s \t %-25s \t %s\n", cdds[i], dishes[i], prds[i]);
+		printf("| %d \t %-25s \t R$%.2f\n", dishes[i].code, dishes[i].name, dishes[i].price);
 	}
 	
 	//array size and print drinks
@@ -63,7 +80,7 @@ void fmenu()
 	int dktotal = sizeof(drinks) / sizeof(drinks[0]);
 	for(int i = 0; i < dktotal; i++)
 	{
-		printf("| %s \t %-25s \t %s\n", cddk[i], drinks[i], prdk[i]);
+		printf("| %d \t %-25s \t R$%.2f\n", drinks[i].code, drinks[i].name, drinks[i].price);
 	}
 	
 	//array size and print dessert 
@@ -71,7 +88,7 @@ void fmenu()
 	int dttotal = sizeof(dessert) / sizeof(dessert[0]);
 	for(int i = 0; i < dttotal; i++)
 	{
-		printf("| %s \t %-25s \t %s\n", cddt[i], dessert[i], prdt[i]);
+		printf("| %d \t %-25s \t R$%.2f\n", dessert[i].code, dessert[i].name, dessert[i].price);
 	}
 	
 	return;
