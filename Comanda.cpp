@@ -1,4 +1,4 @@
-//ATTACH CODES ON INPUT
+//ATTACH CODES ON INPUT - STRUCT
 //ATTACH/STORE ON TAB
 
 #include <stdio.h>
@@ -7,6 +7,7 @@
 //functions
 void fmenu();
 void fmenuop();
+void fopentab();
 void faddorder();
 //void ftotal();
 
@@ -201,7 +202,33 @@ void faddorder()
 	}while(dtnew == 1);
 }
 
-feditorder()
+void fopentab()
 {
 	
+}
+
+void feditorder()
+{
+	int option;
+	printf("\n1. Adicionar novo item.\n");
+	printf("2. Retirar item da comanda.\n");
+	printf("3. Excluir comanda.");
+	printf("\nDigite uma opcao: ");
+	scanf("%d", &option);
+	
+	if((option > 4) || (option <= 0))
+	{
+		printf("Digite uma opcao valida!");
+	}
+	switch (option)
+	{
+		case 1:
+			faddorder();
+			break;
+		/*case 2:
+			fremove();
+			break;
+		case 3:
+			fdelete();*/
+	}
 }
