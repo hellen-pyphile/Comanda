@@ -165,7 +165,7 @@ void faddorder()
 		scanf("%d", &dsamt);
 		//ADD QUANTITY ON PRICE
 		
-		printf("Deseja adicionar uma novo prato? [1]Sim [2]Nao: ");
+		printf("Deseja adicionar um novo prato? [1]Sim [2]Nao: ");
 		scanf("%d", &dsnew);
 		
 		if(dsnew > 2)
