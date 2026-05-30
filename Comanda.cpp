@@ -9,6 +9,7 @@ void fmenu();
 void fmenuop();
 void fopentab();
 void faddorder();
+void feditorder();
 //void ftotal();
 
 int main()
