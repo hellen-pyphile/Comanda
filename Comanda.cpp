@@ -8,7 +8,7 @@
 #define MAX_LINES 100
 #define SERVICE_RATE 0.10f
 
-// ---------- estruturas ----------
+// structs
 struct item
 {
 	const char *name;
@@ -37,7 +37,6 @@ struct tab
 	struct orderline lines[MAX_LINES];
 };
 
-// ---------- cardapio (codigos em decimal e unicos) ----------
 const struct item appetizer[] = {
 	{"Batata Frita", 22.00, 4},
 	{"Polenta Frita", 18.00, 72},
@@ -73,11 +72,11 @@ const struct category menu[] = {
 };
 const int MENU_SIZE = sizeof(menu) / sizeof(menu[0]);
 
-// ---------- estado ----------
+// status
 struct tab currentTab = {0, false, 0, {}};
 int tabCounter = 0;
 
-// ---------- funcoes ----------
+// functions
 int readInt(const char *prompt);
 const struct item *findItem(int code);
 int findLine(int code);
@@ -100,7 +99,6 @@ int main()
 	return 0;
 }
 
-// Le um inteiro com validacao (nao trava com letras)
 int readInt(const char *prompt)
 {
 	char buf[64];
@@ -135,7 +133,7 @@ int findLine(int code)
 
 void fmenu()
 {
-	printf("\n========== CARDAPIO ==========\n");
+	printf("\n| CARDAPIO \n\n");
 	for (int c = 0; c < MENU_SIZE; c++)
 	{
 		printf("|%s\n", menu[c].title);
@@ -150,18 +148,22 @@ void fmenuop()
 	int option;
 	do
 	{
-		printf("\n--------- MENU PRINCIPAL ---------\n");
-		if (currentTab.open)
-			printf("Comanda #%d aberta\n", currentTab.number);
-		else
-			printf("Nenhuma comanda aberta\n");
-		printf("1. Adicionar novo pedido.\n");
-		printf("2. Editar pedido.\n");
-		printf("3. Cancelar pedido.\n");
-		printf("4. Encerrar pedido.\n");
-		printf("5. Ver comanda.\n");
-		printf("0. Sair.\n");
+		printf("\n| MENU PRINCIPAL \n\n");
+		
+			
+		printf("[1] Adicionar novo pedido\n");
+		printf("[2] Editar pedido\n");
+		printf("[3] Cancelar pedido\n");
+		printf("[4] Encerrar pedido\n");
+		printf("[5] Ver comanda\n");
+		printf("[0] Sair\n");
 		option = readInt("Digite uma opcao: ");
+		if (currentTab.open){
+			printf("\nComanda #%d aberta\n", currentTab.number);
+		}
+		else{
+			printf("\nNenhuma comanda aberta\n");
+		}
 
 		switch (option)
 		{
@@ -191,7 +193,6 @@ void fopentab()
 	printf("\nComanda #%d aberta.\n", currentTab.number);
 }
 
-// Adiciona itens (ou soma a quantidade se o codigo ja estiver na comanda)
 void faddorder()
 {
 	if (!currentTab.open)
@@ -244,7 +245,7 @@ void fshowtab()
 		printf("\nNenhuma comanda aberta.\n");
 		return;
 	}
-	printf("\n===== COMANDA #%d =====\n", currentTab.number);
+	printf("\n| COMANDA #%d \n", currentTab.number);
 	if (currentTab.count == 0)
 		printf("(vazia)\n");
 	for (int i = 0; i < currentTab.count; i++)
@@ -278,10 +279,10 @@ void feditorder()
 	int option;
 	do
 	{
-		printf("\n1. Adicionar novo item.\n");
-		printf("2. Retirar item da comanda.\n");
-		printf("3. Excluir todos os itens da comanda.\n");
-		printf("0. Voltar.\n");
+		printf("\n[1] Adicionar novo item.\n");
+		printf("[2] Retirar item da comanda.\n");
+		printf("[3] Excluir todos os itens da comanda.\n");
+		printf("[0] Voltar.\n");
 		option = readInt("Digite uma opcao: ");
 
 		switch (option)
@@ -339,7 +340,7 @@ void fcancorder()
 		printf("\nNenhuma comanda aberta.\n");
 		return;
 	}
-	int confirm = readInt("Cancelar a comanda inteira? [1]Sim [2]Nao: ");
+	int confirm = readInt("Cancelar a comanda inteira? [1] Sim [2] Nao: ");
 	if (confirm == 1)
 	{
 		currentTab.open = false;
@@ -367,11 +368,11 @@ void fendorder()
 	float subtotal = ftotal();
 	float service = 0;
 
-	int opt = readInt("Incluir taxa de servico de 10%? [1]Sim [2]Nao: ");
+	int opt = readInt("Incluir taxa de servico de 10%? [1] Sim [2] Nao: ");
 	if (opt == 1)
 		service = subtotal * SERVICE_RATE;
 
-	printf("\n------- FECHAMENTO -------\n");
+	printf("\n| FECHAMENTO \n");
 	printf("Subtotal: R$%.2f\n", subtotal);
 	printf("Servico:  R$%.2f\n", service);
 	printf("TOTAL:    R$%.2f\n", subtotal + service);
