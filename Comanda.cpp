@@ -148,22 +148,21 @@ void fmenuop()
 	int option;
 	do
 	{
-		printf("\n| MENU PRINCIPAL \n\n");
-		
-			
+		printf("\n| MENU PRINCIPAL \n\n");	
 		printf("[1] Adicionar novo pedido\n");
 		printf("[2] Editar pedido\n");
 		printf("[3] Cancelar pedido\n");
 		printf("[4] Encerrar pedido\n");
 		printf("[5] Ver comanda\n");
 		printf("[0] Sair\n");
-		option = readInt("Digite uma opcao: ");
 		if (currentTab.open){
 			printf("\nComanda #%d aberta\n", currentTab.number);
 		}
 		else{
 			printf("\nNenhuma comanda aberta\n");
 		}
+		printf("--------------------------\n");
+		option = readInt("Digite uma opcao: ");
 
 		switch (option)
 		{
@@ -195,6 +194,7 @@ void fopentab()
 
 void faddorder()
 {
+	system("cls");
 	if (!currentTab.open)
 		fopentab();
 
@@ -240,6 +240,7 @@ void faddorder()
 
 void fshowtab()
 {
+	system("cls");
 	if (!currentTab.open)
 	{
 		printf("\nNenhuma comanda aberta.\n");
@@ -254,6 +255,7 @@ void fshowtab()
 		printf("%02d %dx %-25s R$%.2f\n", it->code, currentTab.lines[i].qty,
 			it->name, currentTab.lines[i].qty * it->price);
 	}
+	printf("----------------------\n");
 	printf("Subtotal: R$%.2f\n", ftotal());
 }
 
@@ -276,20 +278,26 @@ void feditorder()
 		return;
 	}
 
+	system("cls");
+
 	int option;
 	do
 	{
-		printf("\n[1] Adicionar novo item.\n");
-		printf("[2] Retirar item da comanda.\n");
-		printf("[3] Excluir todos os itens da comanda.\n");
-		printf("[0] Voltar.\n");
+		printf("| EDITAR\n");
+		printf("\n[1] Adicionar novo item\n");
+		printf("[2] Retirar item da comanda\n");
+		printf("[3] Excluir todos os itens da comanda\n");
+		printf("[0] Voltar\n");
+		printf("--------------------------------\n");
 		option = readInt("Digite uma opcao: ");
 
 		switch (option)
 		{
+			system("cls");
 			case 1: faddorder(); break;
 			case 2: fremove();   break;
 			case 3:
+				system("cls");
 				currentTab.count = 0;
 				printf("Todos os itens foram removidos.\n");
 				break;
@@ -301,6 +309,7 @@ void feditorder()
 
 void fremove()
 {
+	system("cls");
 	fshowtab();
 	if (currentTab.count == 0)
 		return;
@@ -335,6 +344,7 @@ void fremove()
 
 void fcancorder()
 {
+	system("cls");
 	if (!currentTab.open)
 	{
 		printf("\nNenhuma comanda aberta.\n");
@@ -346,6 +356,7 @@ void fcancorder()
 		currentTab.open = false;
 		currentTab.count = 0;
 		printf("Comanda cancelada.\n");
+		system("cls");
 	}
 	else
 		printf("Operacao abortada.\n");
@@ -353,6 +364,7 @@ void fcancorder()
 
 void fendorder()
 {
+	system("cls");
 	if (!currentTab.open)
 	{
 		printf("\nNenhuma comanda aberta.\n");
