@@ -1,17 +1,14 @@
-//ATTACH CODES ON INPUT - STRUCT
-//ATTACH/STORE ON TAB
+// Sistema de Comanda - Bon Apetit
+// Compilar: g++ Comanda.cpp -o comanda
 
 #include <stdio.h>
-#include <string>
+#include <string.h>
+#include <stdlib.h>
 
-//functions
-void fmenu();
-void fmenuop();
-void fopentab();
-void faddorder();
-void feditorder();
-//void ftotal();
+#define MAX_LINES 100
+#define SERVICE_RATE 0.10f
 
+// structs
 struct item
 {
 	const char *name;
@@ -19,234 +16,384 @@ struct item
 	int code;
 };
 
+struct category
+{
+	const char *title;
+	const struct item *items;
+	int count;
+};
+
+struct orderline
+{
+	int code;
+	int qty;
+};
+
+struct tab
+{
+	int number;
+	bool open;
+	int count;
+	struct orderline lines[MAX_LINES];
+};
+
+const struct item appetizer[] = {
+	{"Batata Frita", 22.00, 4},
+	{"Polenta Frita", 18.00, 72},
+	{"Bolinhas de Queijo", 24.00, 51}
+};
+
+const struct item dishes[] = {
+	{"File de Peixe Empanado", 38.00, 15},
+	{"Frango a Parmegiana", 42.00, 73},
+	{"Frango a Passarinho", 35.00, 47},
+	{"Bisteca", 32.00, 66},
+	{"Cupim ao Molho", 46.00, 25}
+};
+
+const struct item drinks[] = {
+	{"Pink Lemonade", 12.00, 53},
+	{"Refrigerante 250ml", 5.00, 24},
+	{"Suco Natural", 8.50, 33},
+	{"Cha Gelado", 7.00, 12}
+};
+
+const struct item dessert[] = {
+	{"Milkshake", 15.00, 57},
+	{"Petit Gateau", 18.00, 42},
+	{"Sorvete", 10.00, 61}
+};
+
+const struct category menu[] = {
+	{"Entradas",   appetizer, sizeof(appetizer) / sizeof(appetizer[0])},
+	{"Pratos",     dishes,    sizeof(dishes)    / sizeof(dishes[0])},
+	{"Bebidas",    drinks,    sizeof(drinks)    / sizeof(drinks[0])},
+	{"Sobremesas", dessert,   sizeof(dessert)   / sizeof(dessert[0])}
+};
+const int MENU_SIZE = sizeof(menu) / sizeof(menu[0]);
+
+// status
+struct tab currentTab = {0, false, 0, {}};
+int tabCounter = 0;
+
+// functions
+int readInt(const char *prompt);
+const struct item *findItem(int code);
+int findLine(int code);
+void fmenu();
+void fmenuop();
+void fopentab();
+void faddorder();
+void feditorder();
+void fremove();
+void fcancorder();
+void fendorder();
+void fshowtab();
+float ftotal();
+
 int main()
 {
-	printf("\tBon Apetit\n\n");
-	
-	fmenu();
-	printf("\n\nAdicionar pedido.\n");
-	faddorder();
+	printf("\tBon Apetit\n");
 	fmenuop();
+	printf("\nAte logo!\n");
+	return 0;
+}
+
+int readInt(const char *prompt)
+{
+	char buf[64];
+	int value;
+	while (true)
+	{
+		printf("%s", prompt);
+		if (fgets(buf, sizeof(buf), stdin) == NULL)
+			exit(0); // fim da entrada
+		if (sscanf(buf, "%d", &value) == 1)
+			return value;
+		printf("Entrada invalida! Digite um numero.\n");
+	}
+}
+
+const struct item *findItem(int code)
+{
+	for (int c = 0; c < MENU_SIZE; c++)
+		for (int i = 0; i < menu[c].count; i++)
+			if (menu[c].items[i].code == code)
+				return &menu[c].items[i];
+	return NULL;
+}
+
+int findLine(int code)
+{
+	for (int i = 0; i < currentTab.count; i++)
+		if (currentTab.lines[i].code == code)
+			return i;
+	return -1;
 }
 
 void fmenu()
 {
-	//menu
-	struct item appetizer[] = {
-		{"Batata Frita", 22.00, 004},
-		{"Polenta Frita", 18.00, 072},
-		{"Bolinhas de Queijo", 24.00, 051}
-	};
-	
-	struct item dishes[] = {
-		{"File de Peixe Empanado", 38.00, 015}, 
-		{"Frango a Parmegiana", 42.00, 072},
-		{"Frango a Passarinho", 35.00, 047},
-		{"Bisteca", 32.00, 066},
-		{"Cupim ao Molho", 46.00, 025}
-	};
-	
-	struct item drinks[] = {
-		{"Pink Lemonade", 12.00, 053},
-		{"Refrigerante 250ml", 5.00, 024},
-		{"Suco Natural", 8.50, 033},
-		{"Cha Gelado", 7.00, 012}
-	};
-	
-	struct item dessert[] = {
-		{"Milkshake", 15.00, 057},
-		{"Petit Gateu", 18.00, 042},
-		{"Sorvete", 10.00, 061}
-	};
-	
-	//array size and print appetizer 
-	printf("|Entradas\n");
-	int aptotal = sizeof(appetizer) / sizeof(appetizer[0]);
-	for(int i = 0; i < aptotal; i++)
+	printf("\n| CARDAPIO \n\n");
+	for (int c = 0; c < MENU_SIZE; c++)
 	{
-		printf("| %d \t %-25s \t R$%.2f\n", appetizer[i].code, appetizer[i].name, appetizer[i].price);
+		printf("|%s\n", menu[c].title);
+		for (int i = 0; i < menu[c].count; i++)
+			printf("| %02d \t %-25s \t R$%.2f\n",
+				menu[c].items[i].code, menu[c].items[i].name, menu[c].items[i].price);
 	}
-	
-	//array size and print dishes 
-	printf("|Pratos\n");
-	int dstotal = sizeof(dishes) / sizeof(dishes[0]);
-	for(int i = 0; i < dstotal; i++)
-	{
-		printf("| %d \t %-25s \t R$%.2f\n", dishes[i].code, dishes[i].name, dishes[i].price);
-	}
-	
-	//array size and print drinks
-	printf("|Bebidas\n"); 
-	int dktotal = sizeof(drinks) / sizeof(drinks[0]);
-	for(int i = 0; i < dktotal; i++)
-	{
-		printf("| %d \t %-25s \t R$%.2f\n", drinks[i].code, drinks[i].name, drinks[i].price);
-	}
-	
-	//array size and print dessert 
-	printf("|Sobremesas\n");
-	int dttotal = sizeof(dessert) / sizeof(dessert[0]);
-	for(int i = 0; i < dttotal; i++)
-	{
-		printf("| %d \t %-25s \t R$%.2f\n", dessert[i].code, dessert[i].name, dessert[i].price);
-	}
-	
-	return;
 }
 
 void fmenuop()
 {
 	int option;
-	printf("\n1. Adicionar novo pedido.\n");
-	printf("2. Editar pedido.\n");
-	printf("3. Cancelar pedido.\n");
-	printf("4. Encerrar pedido.");
-	printf("\nDigite uma opcao: ");
-	scanf("%d", &option);
-	
-	if((option > 4) || (option <= 0))
+	do
 	{
-		printf("Digite uma opcao valida!");
-	}
-	
-	switch (option)
-	{
-		case 1:
-			faddorder();
-			break;
-//		case 2:
-//			feditorder();
-//			break;
-//		case 3:
-//			fcancorder();
-//			break;
-//		case 4:
-//			fendorder();
-//			break;
-	}
-}
+		printf("\n| MENU PRINCIPAL \n\n");	
+		printf("[1] Adicionar novo pedido\n");
+		printf("[2] Editar pedido\n");
+		printf("[3] Cancelar pedido\n");
+		printf("[4] Encerrar pedido\n");
+		printf("[5] Ver comanda\n");
+		printf("[0] Sair\n");
+		if (currentTab.open){
+			printf("\nComanda #%d aberta\n", currentTab.number);
+		}
+		else{
+			printf("\nNenhuma comanda aberta\n");
+		}
+		printf("--------------------------\n");
+		option = readInt("Digite uma opcao: ");
 
-void faddorder()
-{
-	char apporder[4];
-	char dsorder[4];
-	char dkorder[4];
-	char dtorder[4];
-	int appamt, dsamt, dkamt, dtamt;
-	int appnew, dsnew, dknew, dtnew;
-	
-	do
-	{
-		printf("\nDigite o codigo da entrada (0 para nenhum): ");
-		scanf("%s", &apporder);
-		
-		printf("Quantidade: ");
-		scanf("%d", &appamt);
-		//ADD QUANTITY ON PRICE
-		
-		printf("Deseja adicionar uma nova entrada? [1]Sim [2]Nao: ");
-		scanf("%d", &appnew);
-		
-		if(appnew > 2)
+		switch (option)
 		{
-			printf("Digite uma entrada valida!\n");
+			case 1: faddorder();   break;
+			case 2: feditorder();  break;
+			case 3: fcancorder();  break;
+			case 4: fendorder();   break;
+			case 5: fshowtab();    break;
+			case 0:
+				if (currentTab.open)
+				{
+					printf("Ha uma comanda aberta! Encerre ou cancele antes de sair.\n");
+					option = -1;
+				}
+				break;
+			default:
+				printf("Digite uma opcao valida!\n");
 		}
-		if(appnew == 2)
-			break;
-			
-	}while(appnew == 1);
-	
-	do
-	{
-		printf("\nDigite o codigo do prato (0 para nenhum): ");
-		scanf("%s", &dsorder);
-		
-		printf("Quantidade: ");
-		scanf("%d", &dsamt);
-		//ADD QUANTITY ON PRICE
-		
-		printf("Deseja adicionar um novo prato? [1]Sim [2]Nao: ");
-		scanf("%d", &dsnew);
-		
-		if(dsnew > 2)
-		{
-			printf("Digite uma entrada valida");
-		}
-		if(dsnew == 2)
-			break;
-			
-	}while(dsnew == 1);
-	
-	do
-	{
-		printf("\nDigite o codigo da bebida (0 para nenhum): ");
-		scanf("%s", &dkorder);
-		
-		printf("Quantidade: ");
-		scanf("%d", &dkamt);
-		//ADD QUANTITY ON PRICE
-		
-		printf("Deseja adicionar uma nova entrada? [1]Sim [2]Nao: ");
-		scanf("%d", &dknew);
-		
-		if(dknew > 2)
-		{
-			printf("Digite uma entrada valida");
-		}
-		if(dknew == 2)
-			break;
-			
-	}while(dknew == 1);
-	
-	do
-	{
-		printf("\nDigite o codigo da sobremesa (0 para nenhum): ");
-		scanf("%s", &dtorder);
-		
-		printf("Quantidade: ");
-		scanf("%d", &dtamt);
-		//ADD QUANTITY ON PRICE
-		
-		printf("Deseja adicionar uma nova entrada? [1]Sim [2]Nao: ");
-		scanf("%d", &dtnew);
-		
-		if(dtnew < 2)
-		{
-			printf("Digite uma entrada valida");
-		}
-		if(dtnew == 2)
-			break;
-			
-	}while(dtnew == 1);
+	} while (option != 0);
 }
 
 void fopentab()
 {
-	
+	currentTab.number = ++tabCounter;
+	currentTab.open = true;
+	currentTab.count = 0;
+	printf("\nComanda #%d aberta.\n", currentTab.number);
+}
+
+void faddorder()
+{
+	system("cls");
+	if (!currentTab.open)
+		fopentab();
+
+	fmenu();
+	while (true)
+	{
+		int code = readInt("\nCodigo do item (0 para terminar): ");
+		if (code == 0)
+			break;
+
+		const struct item *it = findItem(code);
+		if (it == NULL)
+		{
+			printf("Codigo inexistente!\n");
+			continue;
+		}
+
+		int qty = readInt("Quantidade: ");
+		if (qty <= 0)
+		{
+			printf("Quantidade invalida!\n");
+			continue;
+		}
+
+		int idx = findLine(code);
+		if (idx >= 0)
+			currentTab.lines[idx].qty += qty;
+		else if (currentTab.count < MAX_LINES)
+		{
+			currentTab.lines[currentTab.count].code = code;
+			currentTab.lines[currentTab.count].qty = qty;
+			currentTab.count++;
+		}
+		else
+		{
+			printf("Comanda cheia!\n");
+			break;
+		}
+		printf("Adicionado: %dx %s = R$%.2f\n", qty, it->name, qty * it->price);
+	}
+	fshowtab();
+}
+
+void fshowtab()
+{
+	system("cls");
+	if (!currentTab.open)
+	{
+		printf("\nNenhuma comanda aberta.\n");
+		return;
+	}
+	printf("\n| COMANDA #%d \n", currentTab.number);
+	if (currentTab.count == 0)
+		printf("(vazia)\n");
+	for (int i = 0; i < currentTab.count; i++)
+	{
+		const struct item *it = findItem(currentTab.lines[i].code);
+		printf("%02d %dx %-25s R$%.2f\n", it->code, currentTab.lines[i].qty,
+			it->name, currentTab.lines[i].qty * it->price);
+	}
+	printf("----------------------\n");
+	printf("Subtotal: R$%.2f\n", ftotal());
+}
+
+float ftotal()
+{
+	float total = 0;
+	for (int i = 0; i < currentTab.count; i++)
+	{
+		const struct item *it = findItem(currentTab.lines[i].code);
+		total += currentTab.lines[i].qty * it->price;
+	}
+	return total;
 }
 
 void feditorder()
 {
+	if (!currentTab.open)
+	{
+		printf("\nNenhuma comanda aberta.\n");
+		return;
+	}
+
+	system("cls");
+
 	int option;
-	printf("\n1. Adicionar novo item.\n");
-	printf("2. Retirar item da comanda.\n");
-	printf("3. Excluir comanda.");
-	printf("\nDigite uma opcao: ");
-	scanf("%d", &option);
-	
-	if((option > 4) || (option <= 0))
+	do
 	{
-		printf("Digite uma opcao valida!");
-	}
-	switch (option)
+		printf("| EDITAR\n");
+		printf("\n[1] Adicionar novo item\n");
+		printf("[2] Retirar item da comanda\n");
+		printf("[3] Excluir todos os itens da comanda\n");
+		printf("[0] Voltar\n");
+		printf("--------------------------------\n");
+		option = readInt("Digite uma opcao: ");
+
+		switch (option)
+		{
+			system("cls");
+			case 1: faddorder(); break;
+			case 2: fremove();   break;
+			case 3:
+				system("cls");
+				currentTab.count = 0;
+				printf("Todos os itens foram removidos.\n");
+				break;
+			case 0: break;
+			default: printf("Digite uma opcao valida!\n");
+		}
+	} while (option != 0);
+}
+
+void fremove()
+{
+	system("cls");
+	fshowtab();
+	if (currentTab.count == 0)
+		return;
+
+	int code = readInt("Codigo do item a retirar: ");
+	int idx = findLine(code);
+	if (idx < 0)
 	{
-		case 1:
-			faddorder();
-			break;
-		/*case 2:
-			fremove();
-			break;
-		case 3:
-			fdelete();*/
+		printf("Item nao esta na comanda!\n");
+		return;
 	}
+
+	int qty = readInt("Quantidade a retirar: ");
+	if (qty <= 0)
+	{
+		printf("Quantidade invalida!\n");
+		return;
+	}
+
+	if (qty >= currentTab.lines[idx].qty)
+	{
+		for (int i = idx; i < currentTab.count - 1; i++)
+			currentTab.lines[i] = currentTab.lines[i + 1];
+		currentTab.count--;
+	}
+	else
+		currentTab.lines[idx].qty -= qty;
+
+	printf("Item atualizado.\n");
+	fshowtab();
+}
+
+void fcancorder()
+{
+	system("cls");
+	if (!currentTab.open)
+	{
+		printf("\nNenhuma comanda aberta.\n");
+		return;
+	}
+	int confirm = readInt("Cancelar a comanda inteira? [1] Sim [2] Nao: ");
+	if (confirm == 1)
+	{
+		currentTab.open = false;
+		currentTab.count = 0;
+		printf("Comanda cancelada.\n");
+		system("cls");
+	}
+	else
+		printf("Operacao abortada.\n");
+}
+
+void fendorder()
+{
+	system("cls");
+	if (!currentTab.open)
+	{
+		printf("\nNenhuma comanda aberta.\n");
+		return;
+	}
+	if (currentTab.count == 0)
+	{
+		printf("Comanda vazia! Adicione itens ou cancele.\n");
+		return;
+	}
+
+	fshowtab();
+	float subtotal = ftotal();
+	float service = 0;
+
+	int opt = readInt("Incluir taxa de servico de 10%? [1] Sim [2] Nao: ");
+	if (opt == 1)
+		service = subtotal * SERVICE_RATE;
+
+	printf("\n| FECHAMENTO \n");
+	printf("Subtotal: R$%.2f\n", subtotal);
+	printf("Servico:  R$%.2f\n", service);
+	printf("TOTAL:    R$%.2f\n", subtotal + service);
+
+	int people = readInt("Dividir a conta por quantas pessoas? (1 = sem dividir): ");
+	if (people > 1)
+		printf("Valor por pessoa: R$%.2f\n", (subtotal + service) / people);
+
+	currentTab.open = false;
+	currentTab.count = 0;
+	printf("\nComanda encerrada. Obrigado pela preferencia!\n");
 }
