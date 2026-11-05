@@ -1,5 +1,5 @@
-// Sistema de Comanda - Bon Apetit
-// Compilar: g++ Comanda.cpp -o comanda
+// view tabs history
+// g++ Comanda.cpp -o comanda
 
 #include <stdio.h>
 #include <string.h>
@@ -256,7 +256,7 @@ void fshowtab()
 			it->name, currentTab.lines[i].qty * it->price);
 	}
 	printf("----------------------\n");
-	printf("Subtotal: R$%.2f\n", ftotal());
+	printf("Subtotal: R$%.2f\n\n", ftotal());
 }
 
 float ftotal()
@@ -293,13 +293,12 @@ void feditorder()
 
 		switch (option)
 		{
-			system("cls");
 			case 1: faddorder(); break;
 			case 2: fremove();   break;
 			case 3:
 				system("cls");
 				currentTab.count = 0;
-				printf("Todos os itens foram removidos.\n");
+				printf("Todos os itens foram removidos.\n\n");
 				break;
 			case 0: break;
 			default: printf("Digite uma opcao valida!\n");
@@ -384,10 +383,11 @@ void fendorder()
 	if (opt == 1)
 		service = subtotal * SERVICE_RATE;
 
-	printf("\n| FECHAMENTO \n");
+	printf("\n| FECHAMENTO \n\n");
 	printf("Subtotal: R$%.2f\n", subtotal);
 	printf("Servico:  R$%.2f\n", service);
 	printf("TOTAL:    R$%.2f\n", subtotal + service);
+	printf("----------------------\n\n");
 
 	int people = readInt("Dividir a conta por quantas pessoas? (1 = sem dividir): ");
 	if (people > 1)
